@@ -9,8 +9,14 @@ import {
 } from "react-native";
 import { Card, Image } from "react-native-elements";
 import { color } from "react-native-reanimated";
-import { Food } from "../shared/food";
 
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+const mapStateToProps = state => {
+  return {
+    dishes: state.dishes,
+  }
+};
 const styles = StyleSheet.create({
   fixToText: {
     flexDirection: "row",
@@ -27,13 +33,13 @@ const styles = StyleSheet.create({
 
 class RenderDish extends Component {
   render() {
-    const food = this.props.food;
-    if (food != null) {
+    const dish = this.props.dish;
+    if (dish != null) {
       return (
         <View>
           <Card>
             <Image
-              source={{ uri: food.image }}
+              source={{ uri:baseUrl+ dish.image }}
               style={{
                 width: "100%",
                 height: 100,
@@ -42,7 +48,7 @@ class RenderDish extends Component {
                 justifyContent: "center",
               }}
             ></Image>
-            <Text style={styles.titleText}>{food.name}</Text>
+            <Text style={styles.titleText}>{dish.name}</Text>
             <View style={styles.fixToText}>
               <Button title="Buy now" color="#111111"></Button>
             </View>
@@ -58,7 +64,7 @@ class RenderDish extends Component {
             Description
           </Text>
           <Card>
-            <Text style={{ margin: 10, fontSize: 16 }}>{food.description}</Text>
+            <Text style={{ margin: 10, fontSize: 16 }}>{dish.description}</Text>
           </Card>
         </View>
       );
@@ -68,21 +74,22 @@ class RenderDish extends Component {
 }
 
 class Fooddetail extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      food: Food,
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     food: Food,
+  //   };
+  // }
   render() {
-    const foodId = parseInt(this.props.route.params.foodId);
+     const dishId = parseInt(this.props.route.params.dishId);
+
     return (
       <View>
-        <RenderDish food={this.state.food[foodId]} />
+        <RenderDish dish={this.props.dishes.dishes[dishId]}/>
         <View style={{ flexDirection: "column", marginLeft: 10 }}>
           <View style={{ height: 150 }}>
             <FlatList
-              data={this.state.food}
+              data={this.props.dishes.dishes}
               style={{ backgroundColor: "white" }}
               horizontal={true}
               renderItem={({ item, index }) =>
@@ -96,6 +103,7 @@ class Fooddetail extends Component {
     );
   }
   renderHorizontalFlatList(item, index) {
+     const dishId = parseInt(this.props.route.params.dishId);
     const { navigate } = this.props.navigation;
     return (
       <View
@@ -110,7 +118,7 @@ class Fooddetail extends Component {
         }}
       >
         <TouchableOpacity
-          onPress={() => navigate("Fooddetail", { foodId: item.id })}
+          onPress={() =>  navigate('Fooddetail', { dishId: item.id })}
           style={{
             flex: 1,
             flexDirection: "column",
@@ -124,7 +132,7 @@ class Fooddetail extends Component {
                            }}
                          /> */}
           <Image
-            source={{ uri: item.image }}
+            source={{ uri: baseUrl + item.image }}
             style={{ width: 90, height: 90 }}
           ></Image>
 
@@ -134,4 +142,4 @@ class Fooddetail extends Component {
     );
   }
 }
-export default Fooddetail;
+export default connect(mapStateToProps, )(Fooddetail);

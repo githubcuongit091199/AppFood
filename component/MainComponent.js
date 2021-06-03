@@ -10,7 +10,11 @@ import Cart from "./CartComponent";
 import Total from "./TotalCartComponent";
 import Login from "./LoginComponent";
 import Register from "./RegisterComponent";
-
+import { connect } from 'react-redux';
+import { fetchLeaders, fetchDishes, fetchComments } from './redux/ActionCreators';
+const mapDispatchToProps = dispatch => ({
+  fetchDishes: () => dispatch(fetchDishes()),
+});
 
 const registerNavigator = createStackNavigator();
 function RegisterNavigatorScreen() {
@@ -221,5 +225,9 @@ class Main extends Component {
       </NavigationContainer>
     );
   }
+  componentDidMount() {
+    // redux
+    this.props.fetchDishes();
+  }
 }
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);

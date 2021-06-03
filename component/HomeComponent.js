@@ -10,7 +10,13 @@ import {
 } from "react-native";
 import { Food } from "../shared/food";
 import { ListItem, Avatar } from "react-native-elements";
-
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+const mapStateToProps = state => {
+  return {
+    dishes: state.dishes
+  }
+};
 const styles = StyleSheet.create({
   qc: {
     height: 200,
@@ -45,19 +51,14 @@ class RenderSwiper extends Component {
   }
 }
 class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      food: Food,
-    };
-  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
         <RenderAdvertisement />
 
         <FlatList
-          data={this.state.food}
+          data={this.props.dishes.dishes}
           renderItem={({ item, index }) => this.renderFood(item, index)}
           keyExtractor={(item) => item.id.toString()}
         />
@@ -66,7 +67,7 @@ class Home extends Component {
         <View style={{ flexDirection: "column" }}>
           <View style={{ height: 150 }}>
             <FlatList
-              data={this.state.food}
+              data={this.props.dishes.dishes}
               style={{ backgroundColor: "white" }}
               horizontal={true}
               renderItem={({ item, index }) =>
@@ -83,14 +84,14 @@ class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <ScrollView style={{ flex: 1 }}>
-        <ListItem onPress={() => navigate("Fooddetail", { foodId: item.id })}>
+        <ListItem onPress={() => navigate('Fooddetail', { dishId: item.id })}>
           {/* <Avatar
                             source={{
                               uri: item.image,
                             }}
                           /> */}
           <Image
-            source={{ uri: item.image }}
+            source={{ uri:baseUrl + item.image }}
             style={{ width: 100, height: 100 }}
           ></Image>
           <ListItem.Content>
@@ -123,7 +124,7 @@ class Home extends Component {
         }}
       >
         <TouchableOpacity
-          onPress={() => navigate("Fooddetail", { foodId: item.id })}
+          onPress={() =>  navigate('Fooddetail  ', { dishId: item.id })}
           style={{
             flex: 1,
             flexDirection: "column",
@@ -137,7 +138,7 @@ class Home extends Component {
                            }}
                          /> */}
           <Image
-            source={{ uri: item.image }}
+            source={{ uri:baseUrl +  item.image }}
             style={{ width: 90, height: 90 }}
           ></Image>
 
@@ -148,4 +149,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default connect(mapStateToProps)(Home);
